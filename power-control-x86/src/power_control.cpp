@@ -2209,6 +2209,13 @@ int main(int argc, char* argv[])
             return -1;
         }
 
+
+        if ( power_control::sioPowerGoodLine.get_value() == 1 )
+        {
+                powerStateWaitForSIOPowerGood(Event::sioPowerGoodAssert);
+        }
+
+
         // Request SIO_ONCONTROL GPIO events
         if (!power_control::requestGPIOEvents(
                 power_control::sioOnControlName,
