@@ -1731,7 +1731,12 @@ static void powerStateWaitForPSPowerOK(const Event event)
             if (sioEnabled == true)
             {
                 sioPowerGoodWatchdogTimerStart();
-                setPowerState(PowerState::waitForSIOPowerGood);
+		// We switch to a wait fro SIOPowerGood only if it is not
+		// yet on
+		if ( power_control::sioPowerGoodLine.get_value() == 0 )
+	                setPowerState(PowerState::waitForSIOPowerGood);
+		else
+			setPowerState(PowerState::on);
             }
             else
             {
@@ -1783,7 +1788,10 @@ static void powerStateOff(const Event event)
         {
             if (sioEnabled == true)
             {
-                setPowerState(PowerState::waitForSIOPowerGood);
+		if ( power_control::sioPowerGoodLine.get_value() == 0 )
+	                setPowerState(PowerState::waitForSIOPowerGood);
+		else
+			setPowerState(PowerState::on);
             }
             else
             {
@@ -1874,7 +1882,10 @@ static void powerStateCycleOff(const Event event)
             powerCycleTimer.cancel();
             if (sioEnabled == true)
             {
-                setPowerState(PowerState::waitForSIOPowerGood);
+		if ( power_control::sioPowerGoodLine.get_value() == 0 )
+	                setPowerState(PowerState::waitForSIOPowerGood);
+		else
+			setPowerState(PowerState::on);
             }
             else
             {
@@ -3163,6 +3174,10 @@ int main(int argc, char* argv[])
             {
                 return -1;
             }
+	    if ( sioPowerGoodLine.get_value() == 1 )
+	    {
+		    powerStateWaitForSIOPowerGood(Event::sioPowerGoodAssert);
+	    }
         }
         else if (sioPwrGoodConfig.type == ConfigType::DBUS)
         {
