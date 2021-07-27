@@ -2212,7 +2212,7 @@ int main(int argc, char* argv[])
 
         if ( power_control::sioPowerGoodLine.get_value() == 1 )
         {
-                powerStateWaitForSIOPowerGood(Event::sioPowerGoodAssert);
+                power_control::powerStateWaitForSIOPowerGood(Event::sioPowerGoodAssert);
         }
 
 
