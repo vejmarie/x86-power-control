@@ -2319,15 +2319,7 @@ int main(int argc, char* argv[])
     // Initialize the power state
     power_control::powerState = power_control::PowerState::off;
 
-    if ( power_control::sioPowerGoodLine.get_value() == 1 )
-    {
-           power_control::powerStateWaitForSIOPowerGood(power_control::Event::sioPowerGoodAssert);
-    }
-
-
     // Check power good
-
-
 
     if (power_control::psPowerOKLine.get_value() > 0)
     {
@@ -2711,6 +2703,11 @@ int main(int argc, char* argv[])
         });
 
     power_control::restartCauseIface->initialize();
+
+    if ( power_control::sioPowerGoodLine.get_value() == 1 )
+    {
+           power_control::sendPowerControlEvent(power_control::Event::sioPowerGoodAssert);
+    }
 
     power_control::currentHostStateMonitor();
 
