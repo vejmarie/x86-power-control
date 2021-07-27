@@ -1086,17 +1086,17 @@ static int setGPIOOutputForMs(const std::string& name, const int value,
 
 static void powerOn()
 {
-    setGPIOOutputForMs(power_control::powerOutName, 0, powerPulseTimeMs);
+    setGPIOOutputForMs(power_control::powerOutName, 1, powerPulseTimeMs);
 }
 
 static void gracefulPowerOff()
 {
-    setGPIOOutputForMs(power_control::powerOutName, 0, powerPulseTimeMs);
+    setGPIOOutputForMs(power_control::powerOutName, 1, powerPulseTimeMs);
 }
 
 static void forcePowerOff()
 {
-    if (setGPIOOutputForMs(power_control::powerOutName, 0,
+    if (setGPIOOutputForMs(power_control::powerOutName, 1,
                            forceOffPulseTimeMs) < 0)
     {
         return;
@@ -1133,7 +1133,7 @@ static void forcePowerOff()
 
 static void reset()
 {
-    setGPIOOutputForMs(power_control::resetOutName, 0, resetPulseTimeMs);
+    setGPIOOutputForMs(power_control::resetOutName, 1, resetPulseTimeMs);
 }
 
 static void gracefulPowerOffTimerStart()
@@ -2303,12 +2303,12 @@ int main(int argc, char* argv[])
 
     // Initialize POWER_OUT and RESET_OUT GPIO.
     gpiod::line line;
-    if (!power_control::setGPIOOutput(power_control::powerOutName, 1, line))
+    if (!power_control::setGPIOOutput(power_control::powerOutName, 0, line))
     {
         return -1;
     }
 
-    if (!power_control::setGPIOOutput(power_control::resetOutName, 1, line))
+    if (!power_control::setGPIOOutput(power_control::resetOutName, 0, line))
     {
         return -1;
     }
