@@ -2209,13 +2209,6 @@ int main(int argc, char* argv[])
             return -1;
         }
 
-
-        if ( power_control::sioPowerGoodLine.get_value() == 1 )
-        {
-                power_control::powerStateWaitForSIOPowerGood(power_control::Event::sioPowerGoodAssert);
-        }
-
-
         // Request SIO_ONCONTROL GPIO events
         if (!power_control::requestGPIOEvents(
                 power_control::sioOnControlName,
@@ -2325,7 +2318,17 @@ int main(int argc, char* argv[])
 
     // Initialize the power state
     power_control::powerState = power_control::PowerState::off;
+
+    if ( power_control::sioPowerGoodLine.get_value() == 1 )
+    {
+           power_control::powerStateWaitForSIOPowerGood(power_control::Event::sioPowerGoodAssert);
+    }
+
+
     // Check power good
+
+
+
     if (power_control::psPowerOKLine.get_value() > 0)
     {
         power_control::powerState = power_control::PowerState::on;
