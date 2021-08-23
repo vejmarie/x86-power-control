@@ -2704,11 +2704,11 @@ int main(int argc, char* argv[])
 
     power_control::restartCauseIface->initialize();
 
-    if (sioEnabled == true)
+    if (power_control::sioEnabled == true)
     {
-        if (sioPowerGoodLine.get_value() == 1)
+        if (power_control::sioPowerGoodLine.get_value() == 1)
         {
-            sendPowerControlEvent(Event::sioPowerGoodAssert);
+	    power_control::sendPowerControlEvent(Event::sioPowerGoodAssert);
             std::string logMsg = "SIO Power Good asserted during "
                                  "initialization as associated GPIO is HIGH";
             phosphor::logging::log<phosphor::logging::level::INFO>(
