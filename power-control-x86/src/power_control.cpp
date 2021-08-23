@@ -2708,7 +2708,7 @@ int main(int argc, char* argv[])
     {
         if (power_control::sioPowerGoodLine.get_value() == 1)
         {
-	    power_control::sendPowerControlEvent(Event::sioPowerGoodAssert);
+	    power_control::sendPowerControlEvent(power_control::Event::sioPowerGoodAssert);
             std::string logMsg = "SIO Power Good asserted during "
                                  "initialization as associated GPIO is HIGH";
             phosphor::logging::log<phosphor::logging::level::INFO>(
