@@ -2319,11 +2319,18 @@ int main(int argc, char* argv[])
     // Initialize the power state
     power_control::powerState = power_control::PowerState::off;
 
+    std::string logMsg1 = " Power State off";
+    phosphor::logging::log<phosphor::logging::level::INFO>(
+                logMsg.c_str());
+
     // Check power good
 
     if (power_control::psPowerOKLine.get_value() > 0)
     {
         power_control::powerState = power_control::PowerState::on;
+	std::string logMsg1 = " Power State on";
+        phosphor::logging::log<phosphor::logging::level::INFO>(
+                logMsg.c_str());
     }
 
     // Initialize the power state storage
