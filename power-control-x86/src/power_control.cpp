@@ -2321,7 +2321,7 @@ int main(int argc, char* argv[])
 
     std::string logMsg1 = " Power State off";
     phosphor::logging::log<phosphor::logging::level::INFO>(
-                logMsg.c_str());
+                logMsg1.c_str());
 
     // Check power good
 
@@ -2330,7 +2330,7 @@ int main(int argc, char* argv[])
         power_control::powerState = power_control::PowerState::on;
 	std::string logMsg1 = " Power State on";
         phosphor::logging::log<phosphor::logging::level::INFO>(
-                logMsg.c_str());
+                logMsg1.c_str());
     }
 
     // Initialize the power state storage
