@@ -65,6 +65,7 @@ struct ConfigData
     std::string dbusName;
     std::string path;
     std::string interface;
+    std::string polarity
     ConfigType type;
 };
 
@@ -1220,6 +1221,13 @@ static int setGPIOOutputForMs(const std::string& name, const int value,
 
 static void powerOn()
 {
+    if ( !powerOutConfig.polarity.empty() )
+    {
+	    std::string errMsg =
+                    "powerOutConfig Polarity set: " + powerOutConfig.polarity;
+                phosphor::logging::log<phosphor::logging::level::ERR>(
+                    errMsg.c_str());
+    }
     setGPIOOutputForMs(powerOutConfig.lineName, 1,
                        TimerMap["powerPulseTimeMs"]);
 }
