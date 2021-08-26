@@ -1220,7 +1220,7 @@ static int setGPIOOutputForMs(const std::string& name, const int value,
 
 static void powerOn()
 {
-    setGPIOOutputForMs(powerOutConfig.lineName, 0,
+    setGPIOOutputForMs(powerOutConfig.lineName, 1,
                        TimerMap["powerPulseTimeMs"]);
 }
 #ifdef CHASSIS_SYSTEM_RESET
@@ -1307,13 +1307,13 @@ static void slotPowerCycle()
 #endif
 static void gracefulPowerOff()
 {
-    setGPIOOutputForMs(powerOutConfig.lineName, 0,
+    setGPIOOutputForMs(powerOutConfig.lineName, 1,
                        TimerMap["powerPulseTimeMs"]);
 }
 
 static void forcePowerOff()
 {
-    if (setGPIOOutputForMs(powerOutConfig.lineName, 0,
+    if (setGPIOOutputForMs(powerOutConfig.lineName, 1,
                            TimerMap["forceOffPulseTimeMs"]) < 0)
     {
         return;
@@ -1355,7 +1355,7 @@ static void forcePowerOff()
 
 static void reset()
 {
-    setGPIOOutputForMs(resetOutConfig.lineName, 0,
+    setGPIOOutputForMs(resetOutConfig.lineName, 1,
                        TimerMap["resetPulseTimeMs"]);
 }
 
