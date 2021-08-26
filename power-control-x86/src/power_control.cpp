@@ -3320,7 +3320,7 @@ int main(int argc, char* argv[])
     gpiod::line line;
     if (!powerOutConfig.lineName.empty())
     {
-        if (!setGPIOOutput(powerOutConfig.lineName, 1, line))
+        if (!setGPIOOutput(powerOutConfig.lineName, 0, line))
         {
             return -1;
         }
@@ -3334,7 +3334,7 @@ int main(int argc, char* argv[])
 
     if (!resetOutConfig.lineName.empty())
     {
-        if (!setGPIOOutput(resetOutConfig.lineName, 1, line))
+        if (!setGPIOOutput(resetOutConfig.lineName, 0, line))
         {
             return -1;
         }
