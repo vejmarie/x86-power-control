@@ -3947,6 +3947,8 @@ int main(int argc, char* argv[])
 
     currentHostStateMonitor();
 
+    sendPowerControlEvent(Event::sioPowerGoodAssert);
+
     io.run();
 
     return 0;
