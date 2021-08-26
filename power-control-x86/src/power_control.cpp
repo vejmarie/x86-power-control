@@ -65,7 +65,7 @@ struct ConfigData
     std::string dbusName;
     std::string path;
     std::string interface;
-    std::string polarity
+    std::string polarity;
     ConfigType type;
 };
 
