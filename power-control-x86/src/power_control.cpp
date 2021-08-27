@@ -2541,6 +2541,10 @@ static int loadConfigValues()
                     "configuration");
                 return -1;
             }
+	    if (gpioConfig.contains("Polarity"))
+	    {
+		    tempGpioData->polarity = gpioConfig["Polarity"];
+	    }
         }
         else
         {
