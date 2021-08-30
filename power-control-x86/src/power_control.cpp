@@ -65,7 +65,7 @@ struct ConfigData
     std::string dbusName;
     std::string path;
     std::string interface;
-    std::string polarity;
+    int polarity;
     ConfigType type;
 };
 
@@ -1221,10 +1221,10 @@ static int setGPIOOutputForMs(const std::string& name, const int value,
 
 static void powerOn()
 {
-    if ( !powerOutConfig.polarity.empty() )
+    if ( powerOutConfig.polarity != -1 )
     {
 	    std::string errMsg =
-                    "powerOutConfig Polarity set: " + powerOutConfig.polarity;
+                    "powerOutConfig Polarity in config file";
                 phosphor::logging::log<phosphor::logging::level::ERR>(
                     errMsg.c_str());
     }
@@ -2543,8 +2543,25 @@ static int loadConfigValues()
             }
 	    if (gpioConfig.contains("Polarity"))
 	    {
-		    tempGpioData->polarity = gpioConfig["Polarity"];
+		    int temp;
+		    try
+		    {
+			    temp = std::stoi(gpioConfig["Polarity"]);
+		    }
+		    catch(std::exception const & e)
+		    {
+			std::string errMsg =
+			"Polarity defined but not properly setup." +
+			"Please <integer> value only. Currentlys set to " +
+			gpioConfig["Polarity"];
+			phosphor::logging::log<phosphor::logging::level::ERR>(
+			errMsg.c_str());
+			return -1;
+		    }
+		    tempGpioData->polarity = temp;
 	    }
+	    else
+		    tempGpioData->polarity = -1;
         }
         else
         {
