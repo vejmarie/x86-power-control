@@ -2544,16 +2544,17 @@ static int loadConfigValues()
 	    if (gpioConfig.contains("Polarity"))
 	    {
 		    int temp;
+		    std::string polarity = gpioConfig["Polarity"];
 		    try
 		    {
-			    temp = stoi(gpioConfig["Polarity"]);
+			    temp = stoi(polarity);
 		    }
 		    catch(std::exception const & e)
 		    {
 			std::string errMsg =
 			"Polarity defined but not properly setup. \
 			Please <integer> value only. Currentlys set to " +
-			gpioConfig["Polarity"];
+			polarity;
 			phosphor::logging::log<phosphor::logging::level::ERR>(
 			errMsg.c_str());
 			return -1;
