@@ -3358,7 +3358,7 @@ int main(int argc, char* argv[])
         {
             powerState = PowerState::on;
         }
-        sendPowerControlEvent(Event::sioPowerGoodAssert);
+//        sendPowerControlEvent(Event::sioPowerGoodAssert);
     }
     else
     {
@@ -3724,6 +3724,7 @@ int main(int argc, char* argv[])
                                             powerButtonPressed);
 
         powerButtonIface->initialize();
+        sendPowerControlEvent(Event::sioPowerGoodAssert);
     }
 
     if (!resetButtonConfig.lineName.empty())
