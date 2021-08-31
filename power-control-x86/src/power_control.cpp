@@ -3358,6 +3358,7 @@ int main(int argc, char* argv[])
         {
             powerState = PowerState::on;
         }
+        sendPowerControlEvent(Event::sioPowerGoodAssert);
     }
     else
     {
@@ -3932,7 +3933,7 @@ int main(int argc, char* argv[])
 
     currentHostStateMonitor();
 
-    sendPowerControlEvent(Event::sioPowerGoodAssert);
+//    sendPowerControlEvent(Event::sioPowerGoodAssert);
 
     io.run();
 
