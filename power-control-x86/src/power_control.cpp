@@ -3724,7 +3724,6 @@ int main(int argc, char* argv[])
                                             powerButtonPressed);
 
         powerButtonIface->initialize();
-        sendPowerControlEvent(Event::sioPowerGoodAssert);
     }
 
     if (!resetButtonConfig.lineName.empty())
