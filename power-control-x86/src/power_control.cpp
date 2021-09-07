@@ -1175,35 +1175,42 @@ static int setMaskedGPIOOutputForMs(gpiod::line& maskedGPIOLine,
     return 0;
 }
 
-static int setGPIOOutputForMs(const std::string& name, const int value,
+static int setGPIOOutputForMs(static ConfigData config, const int value,
                               const int durationMs)
 {
     int polarizedvalue;
-
-    // If the requested GPIO is masked, use the mask line to set the output
-    if (powerButtonMask && name == powerOutConfig.lineName)
+    if (!config.polarity)
     {
-        return setMaskedGPIOOutputForMs(powerButtonMask, name, int(powerOutConfig.polarity),
+	polarizedvalue = value;
+    }
+    else
+    {
+	polarizedvalue = !value;
+    }
+    // If the requested GPIO is masked, use the mask line to set the output
+    if (powerButtonMask && config.name == powerOutConfig.lineName)
+    {
+        return setMaskedGPIOOutputForMs(powerButtonMask, config.name, polarizedvalue,
                                         durationMs);
     }
-    if (resetButtonMask && name == resetOutConfig.lineName)
+    if (resetButtonMask && config.name == resetOutConfig.lineName)
     {
-        return setMaskedGPIOOutputForMs(resetButtonMask, name, int(resetOutConfig.polarity),
+        return setMaskedGPIOOutputForMs(resetButtonMask, config.name, polarizedvalue,
                                         durationMs);
     }
 
     // No mask set, so request and set the GPIO normally
     gpiod::line gpioLine;
-    if (!setGPIOOutput(name, value, gpioLine))
+    if (!setGPIOOutput(config.name, polarizedvalue, gpioLine))
     {
         return -1;
     }
     gpioAssertTimer.expires_after(std::chrono::milliseconds(durationMs));
-    gpioAssertTimer.async_wait([gpioLine, value,
-                                name](const boost::system::error_code ec) {
+    gpioAssertTimer.async_wait([gpioLine, polarizedvalue,
+                                config.name](const boost::system::error_code ec) {
         // Set the GPIO line back to the opposite value
-        gpioLine.set_value(!value);
-        std::string logMsg = name + " released";
+        gpioLine.set_value(!polarizedvalue);
+        std::string logMsg = config.name + " released";
         phosphor::logging::log<phosphor::logging::level::INFO>(logMsg.c_str());
         if (ec)
         {
@@ -1212,7 +1219,7 @@ static int setGPIOOutputForMs(const std::string& name, const int value,
             if (ec != boost::asio::error::operation_aborted)
             {
                 std::string errMsg =
-                    name + " async_wait failed: " + ec.message();
+                    config.name + " async_wait failed: " + ec.message();
                 phosphor::logging::log<phosphor::logging::level::ERR>(
                     errMsg.c_str());
             }
@@ -1223,13 +1230,7 @@ static int setGPIOOutputForMs(const std::string& name, const int value,
 
 static void powerOn()
 {
-    if ( powerOutConfig.polarity != -1 )
-    {
-	setGPIOOutputForMs(powerOutConfig.lineName, powerOutConfig.polarity,
-			   TimerMap["powerPulseTimeMs"]);
-	return;
-    }
-    setGPIOOutputForMs(powerOutConfig.lineName, 0,
+    setGPIOOutputForMs(powerOutConfig, 0,
                         TimerMap["powerPulseTimeMs"]);
 }
 #ifdef CHASSIS_SYSTEM_RESET
@@ -1316,34 +1317,17 @@ static void slotPowerCycle()
 #endif
 static void gracefulPowerOff()
 {
-    if (powerOutConfig.polarity != -1)
-    {
-	    setGPIOOutputForMs(powerOutConfig.lineName, powerOutConfig.polarity,
-	                       TimerMap["powerPulseTimeMs"]);
-	    return;
-    }
-    setGPIOOutputForMs(powerOutConfig.lineName, 0,
+    setGPIOOutputForMs(powerOutConfig, 0,
                        TimerMap["powerPulseTimeMs"]);
 }
 
 static void forcePowerOff()
 {
-    if (powerOutConfig.polarity != -1)
-    {
-    	if (setGPIOOutputForMs(powerOutConfig.lineName, powerOutConfig.polarity,
-	                           TimerMap["forceOffPulseTimeMs"]) < 0)
-    	{
-		return;
-	}
-    }
-    else
-    {
-	if (setGPIOOutputForMs(powerOutConfig.lineName, 0,
-       		                   TimerMap["forceOffPulseTimeMs"]) < 0)
+	if (setGPIOOutputForMs(powerOutConfig, 0,
+    		                   TimerMap["forceOffPulseTimeMs"]) < 0)
     	{
         	return;
     	}
-    }
 
     // If the force off timer expires, then the PCH power-button override
     // failed, so attempt the Unconditional Powerdown SMBus command.
@@ -1381,7 +1365,7 @@ static void forcePowerOff()
 
 static void reset()
 {
-    setGPIOOutputForMs(resetOutConfig.lineName, 1,
+    setGPIOOutputForMs(resetOutConfig, 1,
                        TimerMap["resetPulseTimeMs"]);
 }
 
@@ -3387,10 +3371,20 @@ int main(int argc, char* argv[])
     gpiod::line line;
     if (!powerOutConfig.lineName.empty())
     {
-	if (!setGPIOOutput(powerOutConfig.lineName, 1, line))
+	if (!powerOutConfig.polarity)
 	{
-		return -1;
-        }
+		if (!setGPIOOutput(powerOutConfig.lineName, 1, line))
+		{
+			return -1;
+	        }
+	}
+	else
+	{
+		if (!setGPIOOutput(powerOutConfig.lineName, 0, line))
+                {
+                        return -1;
+                }
+	}
     }
     else
     {
@@ -3401,10 +3395,20 @@ int main(int argc, char* argv[])
 
     if (!resetOutConfig.lineName.empty())
     {
-        if (!setGPIOOutput(resetOutConfig.lineName, 1, line))
-        {
-            return -1;
-        }
+	if (!resetOutConfig.polarity)
+	{
+	        if (!setGPIOOutput(resetOutConfig.lineName, 1, line))
+	        {
+	            return -1;
+	        }
+	}
+	else
+	{
+		if (!setGPIOOutput(resetOutConfig.lineName, 0, line))
+                {
+                    return -1;
+                }
+	{
     }
     else
     {
