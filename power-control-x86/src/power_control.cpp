@@ -1175,7 +1175,7 @@ static int setMaskedGPIOOutputForMs(gpiod::line& maskedGPIOLine,
     return 0;
 }
 
-static int setGPIOOutputForMs(static ConfigData config, const int value,
+static int setGPIOOutputForMs(struct ConfigData config, const int value,
                               const int durationMs)
 {
     int polarizedvalue;
@@ -3408,7 +3408,7 @@ int main(int argc, char* argv[])
                 {
                     return -1;
                 }
-	{
+	}
     }
     else
     {
