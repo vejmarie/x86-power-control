@@ -65,7 +65,7 @@ struct ConfigData
     std::string dbusName;
     std::string path;
     std::string interface;
-    int polarity;
+    bool polarity;
     ConfigType type;
 };
 
@@ -1178,15 +1178,17 @@ static int setMaskedGPIOOutputForMs(gpiod::line& maskedGPIOLine,
 static int setGPIOOutputForMs(const std::string& name, const int value,
                               const int durationMs)
 {
+    int polarizedvalue;
+
     // If the requested GPIO is masked, use the mask line to set the output
     if (powerButtonMask && name == powerOutConfig.lineName)
     {
-        return setMaskedGPIOOutputForMs(powerButtonMask, name, value,
+        return setMaskedGPIOOutputForMs(powerButtonMask, name, int(powerOutConfig.polarity),
                                         durationMs);
     }
     if (resetButtonMask && name == resetOutConfig.lineName)
     {
-        return setMaskedGPIOOutputForMs(resetButtonMask, name, value,
+        return setMaskedGPIOOutputForMs(resetButtonMask, name, int(resetOutConfig.polarity),
                                         durationMs);
     }
 
@@ -1379,12 +1381,6 @@ static void forcePowerOff()
 
 static void reset()
 {
-    if (resetOutConfig.polarity != -1)
-    {
-	    setGPIOOutputForMs(resetOutConfig.lineName, resetOutConfig.polarity,
-	                       TimerMap["resetPulseTimeMs"]);
-	    return;
-    }
     setGPIOOutputForMs(resetOutConfig.lineName, 1,
                        TimerMap["resetPulseTimeMs"]);
 }
@@ -2581,10 +2577,13 @@ static int loadConfigValues()
 			errMsg.c_str());
 			return -1;
 		}
-		tempGpioData->polarity = temp;
+		if ( temp == 1 )
+			tempGpioData->polarity = true;
+		else
+			tempGpioData->polarity = false;
 	   }
 	   else
-		tempGpioData->polarity = -1;
+		tempGpioData->polarity = false;
         }
         else
         {
@@ -3388,20 +3387,7 @@ int main(int argc, char* argv[])
     gpiod::line line;
     if (!powerOutConfig.lineName.empty())
     {
-	int trigger;
-	switch (resetOutConfig.polarity)
-	{
-		case 0:
-			trigger=1;
-			break;
-		case 1:
-			trigger=0;
-			break;
-		default:
-			trigger=1;
-	}
-
-	if (!setGPIOOutput(powerOutConfig.lineName, trigger, line))
+	if (!setGPIOOutput(powerOutConfig.lineName, 1, line))
 	{
 		return -1;
         }
@@ -3415,22 +3401,10 @@ int main(int argc, char* argv[])
 
     if (!resetOutConfig.lineName.empty())
     {
-		int trigger;
-		switch (resetOutConfig.polarity)
-		{
-			case 0:
-				trigger=1;
-				break;
-			case 1:
-				trigger=0;
-				break;
-			default: 
-				trigger=1;
-		}
-	        if (!setGPIOOutput(resetOutConfig.lineName, trigger, line))
-	        {
-	            return -1;
-	        }
+        if (!setGPIOOutput(resetOutConfig.lineName, 1, line))
+        {
+            return -1;
+        }
     }
     else
     {
