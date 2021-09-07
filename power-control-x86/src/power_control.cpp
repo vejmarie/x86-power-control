@@ -1188,7 +1188,7 @@ static int setGPIOOutputForMs(struct ConfigData config, const int value,
 	polarizedvalue = !value;
     }
     // If the requested GPIO is masked, use the mask line to set the output
-    if (powerButtonMask && config.name == powerOutConfig.lineName)
+    if (powerButtonMask && config.lineName == powerOutConfig.lineName)
     {
         return setMaskedGPIOOutputForMs(powerButtonMask, config.name, polarizedvalue,
                                         durationMs);
@@ -1201,7 +1201,7 @@ static int setGPIOOutputForMs(struct ConfigData config, const int value,
 
     // No mask set, so request and set the GPIO normally
     gpiod::line gpioLine;
-    if (!setGPIOOutput(config.name, polarizedvalue, gpioLine))
+    if (!setGPIOOutput(config.lineName, polarizedvalue, gpioLine))
     {
         return -1;
     }
