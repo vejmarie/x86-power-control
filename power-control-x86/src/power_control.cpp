@@ -1212,7 +1212,7 @@ static int setGPIOOutputForMs(struct ConfigData config, const int value,
                                 name](const boost::system::error_code ec) {
         // Set the GPIO line back to the opposite value
         gpioLine.set_value(!polarizedvalue);
-        std::string logMsg = config.lineName + " released";
+        std::string logMsg = name + " released";
         phosphor::logging::log<phosphor::logging::level::INFO>(logMsg.c_str());
         if (ec)
         {
@@ -1221,7 +1221,7 @@ static int setGPIOOutputForMs(struct ConfigData config, const int value,
             if (ec != boost::asio::error::operation_aborted)
             {
                 std::string errMsg =
-                    config.lineName + " async_wait failed: " + ec.message();
+                    name + " async_wait failed: " + ec.message();
                 phosphor::logging::log<phosphor::logging::level::ERR>(
                     errMsg.c_str());
             }
