@@ -1205,9 +1205,11 @@ static int setGPIOOutputForMs(struct ConfigData config, const int value,
     {
         return -1;
     }
+    std::string name;
+    name = config.lineName;
     gpioAssertTimer.expires_after(std::chrono::milliseconds(durationMs));
     gpioAssertTimer.async_wait([gpioLine, polarizedvalue,
-                                config.lineName](const boost::system::error_code ec) {
+                                name](const boost::system::error_code ec) {
         // Set the GPIO line back to the opposite value
         gpioLine.set_value(!polarizedvalue);
         std::string logMsg = config.lineName + " released";
