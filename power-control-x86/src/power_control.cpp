@@ -1062,6 +1062,7 @@ static void powerRestorePolicyCheck()
         "xyz.openbmc_project.Common.ACBoot", "ACBoot");
 }
 
+// vejmarie
 // if (!requestGPIOEvents(powerOkConfig.lineName, psPowerOKHandler,
 //                               psPowerOKLine, psPowerOKEvent))
 
@@ -1214,11 +1215,12 @@ static int setGPIOOutputForMs(const ConfigData& config, const int value,
         return -1;
     }
     const std::string name = config.lineName;
+    const int localpolarizedvalue = polarizedvalue;
     gpioAssertTimer.expires_after(std::chrono::milliseconds(durationMs));
-    gpioAssertTimer.async_wait([gpioLine, value,
+    gpioAssertTimer.async_wait([gpioLine, localpolarizedvalue,
                                 name](const boost::system::error_code ec) {
         // Set the GPIO line back to the opposite value
-        gpioLine.set_value(!value);
+        gpioLine.set_value(!localpolarizedvalue);
         std::string logMsg = name + " released";
         phosphor::logging::log<phosphor::logging::level::INFO>(logMsg.c_str());
         if (ec)
