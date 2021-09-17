@@ -1,4 +1,5 @@
 /*
+
 // Copyright (c) 2018-2019 Intel Corporation
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -1061,6 +1062,9 @@ static void powerRestorePolicyCheck()
         "xyz.openbmc_project.Common.ACBoot", "ACBoot");
 }
 
+// if (!requestGPIOEvents(powerOkConfig.lineName, psPowerOKHandler,
+//                               psPowerOKLine, psPowerOKEvent))
+
 static bool requestGPIOEvents(
     const std::string& name, const std::function<void()>& handler,
     gpiod::line& gpioLine,
@@ -1109,6 +1113,10 @@ static bool requestGPIOEvents(
                 // TODO: throw here to force power-control to restart?
                 return;
             }
+	    std::string errMsg =
+                    name + " Calling handler following GPIO status change ";
+                phosphor::logging::log<phosphor::logging::level::ERR>(
+                    errMsg.c_str());
             handler();
         });
     return true;
