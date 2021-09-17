@@ -3747,7 +3747,7 @@ int main(int argc, char* argv[])
                     {
                         return 1;
                     }
-                    if (!setGPIOOutput(powerOutConfig.lineName, 1,
+                    if (!setGPIOOutput(powerOutConfig.lineName, !powerOutConfig.polarity,
                                        powerButtonMask))
                     {
                         throw std::runtime_error("Failed to request GPIO");
@@ -3804,7 +3804,7 @@ int main(int argc, char* argv[])
                     {
                         return 1;
                     }
-                    if (!setGPIOOutput(resetOutConfig.lineName, 1,
+                    if (!setGPIOOutput(resetOutConfig.lineName, !resetOutConfig.polarity,
                                        resetButtonMask))
                     {
                         throw std::runtime_error("Failed to request GPIO");
