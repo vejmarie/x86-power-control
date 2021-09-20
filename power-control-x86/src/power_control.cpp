@@ -3430,6 +3430,10 @@ int main(int argc, char* argv[])
         {
             powerState = PowerState::on;
         }
+        if (sioPowerGoodLine.get_value() == sioPwrGoodConfig.polarity)
+        {
+            powerState = PowerState::on;
+        }
     }
     else
     {
