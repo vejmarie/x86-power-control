@@ -3410,6 +3410,8 @@ int main(int argc, char* argv[])
     // Initialize the power state
     powerState = PowerState::off;
     // Check power good
+    phosphor::logging::log<phosphor::logging::level::INFO>(
+        "Checking Power Good");
 
     if (powerOkConfig.type == ConfigType::GPIO)
     {
@@ -3417,6 +3419,8 @@ int main(int argc, char* argv[])
             sioPowerGoodLine.get_value() == sioPwrGoodConfig.polarity)
         {
             powerState = PowerState::on;
+	    phosphor::logging::log<phosphor::logging::level::INFO>(
+	        "Switching Power State to on");
         }
     }
     else
