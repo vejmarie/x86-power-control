@@ -1812,8 +1812,11 @@ static void powerStateOff(const Event event)
             setPowerState(PowerState::waitForPSPowerOK);
             break;
         case Event::powerOnRequest:
-            psPowerOKWatchdogTimerStart();
-            setPowerState(PowerState::waitForPSPowerOK);
+	    // vejmarie
+	    
+            // psPowerOKWatchdogTimerStart();
+            // setPowerState(PowerState::waitForPSPowerOK);
+
             powerOn();
             break;
         default:
