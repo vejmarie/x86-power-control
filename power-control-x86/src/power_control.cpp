@@ -1233,7 +1233,7 @@ static int setGPIOOutputForMs(const ConfigData& config, const int value,
 static void powerOn()
 {
     phosphor::logging::log<phosphor::logging::level::ERR>(
-                    "vejmarie: switching power");
+                    "vejmarie: switching power ");
     setGPIOOutputForMs(powerOutConfig, 0, TimerMap["powerPulseTimeMs"]);
 }
 #ifdef CHASSIS_SYSTEM_RESET
