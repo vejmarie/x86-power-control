@@ -1232,8 +1232,11 @@ static int setGPIOOutputForMs(const ConfigData& config, const int value,
 
 static void powerOn()
 {
+    std::string errMsg =
+                    "vejmarie: pressing power out button for " + std::to_string(TimerMap["powerPulseTimeMs"]) + " s";
+                    ec.message();
     phosphor::logging::log<phosphor::logging::level::ERR>(
-                    "vejmarie: switching power .. ");
+                    errMsg.c_str());
     setGPIOOutputForMs(powerOutConfig, 0, TimerMap["powerPulseTimeMs"]);
 }
 #ifdef CHASSIS_SYSTEM_RESET
