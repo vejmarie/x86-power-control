@@ -1234,7 +1234,6 @@ static void powerOn()
 {
     std::string errMsg =
                     "vejmarie: pressing power out button for " + std::to_string(TimerMap["powerPulseTimeMs"]) + " s";
-                    ec.message();
     phosphor::logging::log<phosphor::logging::level::ERR>(
                     errMsg.c_str());
     setGPIOOutputForMs(powerOutConfig, 0, TimerMap["powerPulseTimeMs"]);
